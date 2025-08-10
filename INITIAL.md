@@ -6,6 +6,7 @@
 -   **Tool-Based Response System:** The back-end agent will be equipped with various "tools" or functions to handle user requests, such as a function to provide a more detailed story summary, a function to skip to the next story, or a function to retrieve the name of the newsletter for the current story.
 -   **Gmail Newsletter Ingestion:** The app will authenticate with a user's Gmail account to automatically identify and pull newsletters from their inbox, which will then be parsed and stored in the database for processing.
 -   **Audio Pre-Processing:** A pre-processing job will run after newsletter ingestion to convert all text content (summaries and full stories) into audio files. These files will be stored in a cloud bucket for efficient streaming during listening sessions. 🎧
+-   **Sleek, Minimalistic, and Modern User Interface:** The app will feature a clean, intuitive, and aesthetically pleasing design that prioritizes ease of use and a fluid user experience.
 
 ***
 
@@ -25,7 +26,7 @@
 -   **AI Agent Framework:** **LangChain** - A popular and robust framework for building LLM-powered applications, with excellent support for agents and tool-calling. [LangChain Documentation](https://python.langchain.com/docs/get_started/introduction)
 -   **Front-end:** **React Native** - A JavaScript framework for building native mobile apps for both iOS and Android from a single codebase. [React Native Documentation](https://reactnative.dev/docs/getting-started)
 -   **Database:** **Supabase** - An open-source Firebase alternative that provides a PostgreSQL database, authentication, and real-time capabilities. Its SQL database structure is a good fit for your detailed schema. [Supabase Documentation](https://supabase.com/docs). We can also use the [Supabase MCP server](https://github.com/supabase-community/supabase-mcp).
--   **Speech-to-Text (STT) & Text-to-Speech (TTS):** **Vocode** is an open-source Python library for creating real-time voice assistants that integrates with various STT/TTS providers and LLMs. [Vocode Documentation](https://docs.vocode.dev/). We will be using Vocode with Eleven Labs for tts.
+-   **Speech-to-Text (STT) & Text-to-Speech (TTS):** **Vocode** is an open-source Python library for creating real-time voice assistants that integrates with various STT/TTS providers and LLMs. [Vocode Documentation](https://docs.vocode.dev/). We will be using Vocode with ElevenLabs for TTS.
 -   **Gmail API:** **Google's Gmail API** is essential for accessing user inboxes. The documentation will be vital for managing OAuth 2.0 authentication, searching for emails, and parsing message bodies. [Gmail API Documentation](https://developers.google.com/gmail/api/guides)
 
 ***
@@ -38,3 +39,4 @@
 -   **Gmail API Authentication:** Implementing the Gmail API requires a specific OAuth 2.0 flow. This is a critical development step that an AI assistant might struggle with. You'll need to set up an OAuth consent screen in the Google Cloud console and handle the token exchange process, which includes securely storing access and refresh tokens for each user.
 -   **Newsletter Parsing:** The content of a newsletter can be in various formats (HTML, plain text). A robust method will be needed to parse the email body, identify the stories, and extract relevant text for summarization. This may require an AI tool to intelligently separate articles within a single email.
 -   **Scalability:** Consider the potential for multiple users interacting with the agent simultaneously and how the back-end infrastructure will manage these concurrent sessions. The audio pre-processing and cloud storage approach enhances scalability by offloading a key resource-intensive task.
+-   **UI/UX Design for Voice-First:** Achieving a sleek, minimalistic, and modern UI in a voice-first app like MyNewsletters will require careful attention to: ample whitespace, clear typography, intuitive navigation, subtle animations and feedback, and focus on essential elements.
