@@ -50,14 +50,16 @@ class Config:
         self.jwt_algorithm = os.getenv("JWT_ALGORITHM", "HS256")
         self.jwt_expiration_hours = int(os.getenv("JWT_EXPIRATION_HOURS", "24"))
 
+        # Application Configuration
+        self.app_host = os.getenv("APP_HOST", "localhost")
+        self.app_port = int(os.getenv("APP_PORT", "5000"))
+
         # Backend URL for OAuth redirects
         self.backend_url = os.getenv(
             "BACKEND_URL", f"http://{self.app_host}:{self.app_port}"
         )
 
-        # Application Configuration
-        self.app_host = os.getenv("APP_HOST", "localhost")
-        self.app_port = int(os.getenv("APP_PORT", "5000"))
+        # Application Environment Configuration
         self.app_debug = os.getenv("APP_DEBUG", "false").lower() == "true"
         self.app_env = os.getenv("APP_ENV", "development")
 

@@ -129,7 +129,7 @@ class GmailService:
 
         except Exception as e:
             logger.error(f"Failed to exchange code for tokens: {e}")
-            raise ValueError(f"Token exchange failed: {e}")
+            raise ValueError(f"Token exchange failed: {e}") from e
 
     async def refresh_access_token(self, refresh_token: str) -> dict[str, str]:
         """
@@ -167,7 +167,7 @@ class GmailService:
 
         except Exception as e:
             logger.error(f"Failed to refresh access token: {e}")
-            raise ValueError(f"Token refresh failed: {e}")
+            raise ValueError(f"Token refresh failed: {e}") from e
 
     async def _check_rate_limit(self) -> None:
         """
@@ -298,7 +298,7 @@ class GmailService:
 
         except HttpError as e:
             if e.resp.status == 401:  # Unauthorized
-                raise ValueError("Access token expired or invalid")
+                raise ValueError("Access token expired or invalid") from e
             else:
                 logger.error(f"Gmail API error: {e}")
                 raise

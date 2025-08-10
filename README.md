@@ -1,296 +1,328 @@
-# Context Engineering Template
+# My Newsletters Voice Assistant 🎙️
 
-A comprehensive template for getting started with Context Engineering - the discipline of engineering context for AI coding assistants so they have the information necessary to get the job done end to end.
+An AI-powered voice assistant that delivers daily newsletter briefings with real-time interruption capability, conversational interaction, and dynamic content processing.
 
-> **Context Engineering is 10x better than prompt engineering and 100x better than vibe coding.**
+## 🚀 Features
 
-## 🚀 Quick Start
+- **Voice-First Experience**: Natural voice commands to control briefing playback
+- **Real-Time Interruptions**: Say "skip", "tell me more", or ask questions anytime
+- **Gmail Integration**: Automatically ingests newsletters from your Gmail account
+- **AI-Powered Parsing**: Extracts and summarizes stories using OpenAI GPT
+- **High-Quality Audio**: ElevenLabs text-to-speech with streaming optimization
+- **Session Management**: Seamless pause/resume across interruptions
+- **Mobile Ready**: React Native frontend for iOS and Android
 
-```bash
-# 1. Clone this template
-git clone https://github.com/coleam00/Context-Engineering-Intro.git
-cd Context-Engineering-Intro
+## 📋 Prerequisites
 
-# 2. Set up your project rules (optional - template provided)
-# Edit CLAUDE.md to add your project-specific guidelines
+### System Requirements
+- **Python 3.13** (with virtual environment)
+- **Node.js 18+** (for React Native frontend)
+- **Rust Compiler** (required for vocode/tiktoken compatibility)
 
-# 3. Add examples (highly recommended)
-# Place relevant code examples in the examples/ folder
+### External Services
+- [Supabase](https://supabase.com) - Database and storage
+- [ElevenLabs](https://elevenlabs.io) - Text-to-speech API
+- [OpenAI](https://platform.openai.com) - Newsletter parsing
+- [Google Cloud Console](https://console.developers.google.com) - Gmail OAuth
 
-# 4. Create your initial feature request
-# Edit INITIAL.md with your feature requirements
+## 🛠️ Installation
 
-# 5. Generate a comprehensive PRP (Product Requirements Prompt)
-# In Claude Code, run:
-/generate-prp INITIAL.md
-
-# 6. Execute the PRP to implement your feature
-# In Claude Code, run:
-/execute-prp PRPs/your-feature-name.md
-```
-
-## 📚 Table of Contents
-
-- [What is Context Engineering?](#what-is-context-engineering)
-- [Template Structure](#template-structure)
-- [Step-by-Step Guide](#step-by-step-guide)
-- [Writing Effective INITIAL.md Files](#writing-effective-initialmd-files)
-- [The PRP Workflow](#the-prp-workflow)
-- [Using Examples Effectively](#using-examples-effectively)
-- [Best Practices](#best-practices)
-
-## What is Context Engineering?
-
-Context Engineering represents a paradigm shift from traditional prompt engineering:
-
-### Prompt Engineering vs Context Engineering
-
-**Prompt Engineering:**
-- Focuses on clever wording and specific phrasing
-- Limited to how you phrase a task
-- Like giving someone a sticky note
-
-**Context Engineering:**
-- A complete system for providing comprehensive context
-- Includes documentation, examples, rules, patterns, and validation
-- Like writing a full screenplay with all the details
-
-### Why Context Engineering Matters
-
-1. **Reduces AI Failures**: Most agent failures aren't model failures - they're context failures
-2. **Ensures Consistency**: AI follows your project patterns and conventions
-3. **Enables Complex Features**: AI can handle multi-step implementations with proper context
-4. **Self-Correcting**: Validation loops allow AI to fix its own mistakes
-
-## Template Structure
-
-```
-context-engineering-intro/
-├── .claude/
-│   ├── commands/
-│   │   ├── generate-prp.md    # Generates comprehensive PRPs
-│   │   └── execute-prp.md     # Executes PRPs to implement features
-│   └── settings.local.json    # Claude Code permissions
-├── PRPs/
-│   ├── templates/
-│   │   └── prp_base.md       # Base template for PRPs
-│   └── EXAMPLE_multi_agent_prp.md  # Example of a complete PRP
-├── examples/                  # Your code examples (critical!)
-├── CLAUDE.md                 # Global rules for AI assistant
-├── INITIAL.md               # Template for feature requests
-├── INITIAL_EXAMPLE.md       # Example feature request
-└── README.md                # This file
-```
-
-This template doesn't focus on RAG and tools with context engineering because I have a LOT more in store for that soon. ;)
-
-## Step-by-Step Guide
-
-### 1. Set Up Global Rules (CLAUDE.md)
-
-The `CLAUDE.md` file contains project-wide rules that the AI assistant will follow in every conversation. The template includes:
-
-- **Project awareness**: Reading planning docs, checking tasks
-- **Code structure**: File size limits, module organization
-- **Testing requirements**: Unit test patterns, coverage expectations
-- **Style conventions**: Language preferences, formatting rules
-- **Documentation standards**: Docstring formats, commenting practices
-
-**You can use the provided template as-is or customize it for your project.**
-
-### 2. Create Your Initial Feature Request
-
-Edit `INITIAL.md` to describe what you want to build:
-
-```markdown
-## FEATURE:
-[Describe what you want to build - be specific about functionality and requirements]
-
-## EXAMPLES:
-[List any example files in the examples/ folder and explain how they should be used]
-
-## DOCUMENTATION:
-[Include links to relevant documentation, APIs, or MCP server resources]
-
-## OTHER CONSIDERATIONS:
-[Mention any gotchas, specific requirements, or things AI assistants commonly miss]
-```
-
-**See `INITIAL_EXAMPLE.md` for a complete example.**
-
-### 3. Generate the PRP
-
-PRPs (Product Requirements Prompts) are comprehensive implementation blueprints that include:
-
-- Complete context and documentation
-- Implementation steps with validation
-- Error handling patterns
-- Test requirements
-
-They are similar to PRDs (Product Requirements Documents) but are crafted more specifically to instruct an AI coding assistant.
-
-Run in Claude Code:
-```bash
-/generate-prp INITIAL.md
-```
-
-**Note:** The slash commands are custom commands defined in `.claude/commands/`. You can view their implementation:
-- `.claude/commands/generate-prp.md` - See how it researches and creates PRPs
-- `.claude/commands/execute-prp.md` - See how it implements features from PRPs
-
-The `$ARGUMENTS` variable in these commands receives whatever you pass after the command name (e.g., `INITIAL.md` or `PRPs/your-feature.md`).
-
-This command will:
-1. Read your feature request
-2. Research the codebase for patterns
-3. Search for relevant documentation
-4. Create a comprehensive PRP in `PRPs/your-feature-name.md`
-
-### 4. Execute the PRP
-
-Once generated, execute the PRP to implement your feature:
+### 1. Clone and Setup Environment
 
 ```bash
-/execute-prp PRPs/your-feature-name.md
+# Clone the repository
+git clone <repository-url>
+cd my-newsletters
+
+# Create and activate virtual environment
+python3.13 -m venv myenv
+source myenv/bin/activate  # On Windows: myenv\Scripts\activate
 ```
 
-The AI coding assistant will:
-1. Read all context from the PRP
-2. Create a detailed implementation plan
-3. Execute each step with validation
-4. Run tests and fix any issues
-5. Ensure all success criteria are met
+### 2. Install Rust Compiler (Required for Vocode)
 
-## Writing Effective INITIAL.md Files
+```bash
+# Install Rust
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+source ~/.cargo/env
+rustup default stable
 
-### Key Sections Explained
-
-**FEATURE**: Be specific and comprehensive
-- ❌ "Build a web scraper"
-- ✅ "Build an async web scraper using BeautifulSoup that extracts product data from e-commerce sites, handles rate limiting, and stores results in PostgreSQL"
-
-**EXAMPLES**: Leverage the examples/ folder
-- Place relevant code patterns in `examples/`
-- Reference specific files and patterns to follow
-- Explain what aspects should be mimicked
-
-**DOCUMENTATION**: Include all relevant resources
-- API documentation URLs
-- Library guides
-- MCP server documentation
-- Database schemas
-
-**OTHER CONSIDERATIONS**: Capture important details
-- Authentication requirements
-- Rate limits or quotas
-- Common pitfalls
-- Performance requirements
-
-## The PRP Workflow
-
-### How /generate-prp Works
-
-The command follows this process:
-
-1. **Research Phase**
-   - Analyzes your codebase for patterns
-   - Searches for similar implementations
-   - Identifies conventions to follow
-
-2. **Documentation Gathering**
-   - Fetches relevant API docs
-   - Includes library documentation
-   - Adds gotchas and quirks
-
-3. **Blueprint Creation**
-   - Creates step-by-step implementation plan
-   - Includes validation gates
-   - Adds test requirements
-
-4. **Quality Check**
-   - Scores confidence level (1-10)
-   - Ensures all context is included
-
-### How /execute-prp Works
-
-1. **Load Context**: Reads the entire PRP
-2. **Plan**: Creates detailed task list using TodoWrite
-3. **Execute**: Implements each component
-4. **Validate**: Runs tests and linting
-5. **Iterate**: Fixes any issues found
-6. **Complete**: Ensures all requirements met
-
-See `PRPs/EXAMPLE_multi_agent_prp.md` for a complete example of what gets generated.
-
-## Using Examples Effectively
-
-The `examples/` folder is **critical** for success. AI coding assistants perform much better when they can see patterns to follow.
-
-### What to Include in Examples
-
-1. **Code Structure Patterns**
-   - How you organize modules
-   - Import conventions
-   - Class/function patterns
-
-2. **Testing Patterns**
-   - Test file structure
-   - Mocking approaches
-   - Assertion styles
-
-3. **Integration Patterns**
-   - API client implementations
-   - Database connections
-   - Authentication flows
-
-4. **CLI Patterns**
-   - Argument parsing
-   - Output formatting
-   - Error handling
-
-### Example Structure
-
-```
-examples/
-├── README.md           # Explains what each example demonstrates
-├── cli.py             # CLI implementation pattern
-├── agent/             # Agent architecture patterns
-│   ├── agent.py      # Agent creation pattern
-│   ├── tools.py      # Tool implementation pattern
-│   └── providers.py  # Multi-provider pattern
-└── tests/            # Testing patterns
-    ├── test_agent.py # Unit test patterns
-    └── conftest.py   # Pytest configuration
+# Set Python 3.13 compatibility flag
+export PATH="$HOME/.cargo/bin:$PATH"
+export PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1
 ```
 
-## Best Practices
+### 3. Install Python Dependencies
 
-### 1. Be Explicit in INITIAL.md
-- Don't assume the AI knows your preferences
-- Include specific requirements and constraints
-- Reference examples liberally
+```bash
+# Install the application
+pip install -e .
 
-### 2. Provide Comprehensive Examples
-- More examples = better implementations
-- Show both what to do AND what not to do
-- Include error handling patterns
+# Or install manually with dependencies
+pip install tiktoken==0.7.0  # Must be installed first with Rust
+pip install vocode elevenlabs openai supabase
+pip install quart quart-cors sqlalchemy asyncpg pydantic
+pip install python-dotenv google-api-python-client google-auth-oauthlib
+pip install pytest pytest-asyncio pytest-mock pytest-cov
+pip install ruff black mypy
+```
 
-### 3. Use Validation Gates
-- PRPs include test commands that must pass
-- AI will iterate until all validations succeed
-- This ensures working code on first try
+## 🔑 Configuration
 
-### 4. Leverage Documentation
-- Include official API docs
-- Add MCP server resources
-- Reference specific documentation sections
+### 1. Environment Variables
 
-### 5. Customize CLAUDE.md
-- Add your conventions
-- Include project-specific rules
-- Define coding standards
+Copy the example environment file and configure:
 
-## Resources
+```bash
+cp .env.example .env
+```
 
-- [Claude Code Documentation](https://docs.anthropic.com/en/docs/claude-code)
-- [Context Engineering Best Practices](https://www.philschmid.de/context-engineering)
+Edit `.env` with your API keys:
+
+```bash
+# Database Configuration (Supabase)
+SUPABASE_URL=https://your-project-ref.supabase.co
+SUPABASE_ANON_KEY=your-anon-key-here
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key-here
+DATABASE_URL=postgresql://postgres.your-ref:password@aws-0-us-east-1.pooler.supabase.com:6543/postgres
+
+# ElevenLabs API
+ELEVENLABS_API_KEY=your-elevenlabs-api-key-here
+
+# OpenAI API
+OPENAI_API_KEY=sk-your-openai-api-key-here
+
+# Gmail OAuth
+GMAIL_CLIENT_ID=your-gmail-client-id.apps.googleusercontent.com
+GMAIL_CLIENT_SECRET=your-gmail-client-secret
+
+# JWT Authentication
+JWT_SECRET=your-strong-random-jwt-secret-here
+
+# Application
+APP_HOST=localhost
+APP_PORT=5000
+APP_DEBUG=true
+```
+
+### 2. API Keys Setup Guide
+
+#### Supabase Setup
+1. Go to [supabase.com](https://supabase.com) and create an account
+2. Create a new project
+3. Go to Settings → API to get your keys:
+   - `SUPABASE_URL` - Your project URL
+   - `SUPABASE_ANON_KEY` - Anonymous/public key
+   - `SUPABASE_SERVICE_ROLE_KEY` - Service role key (keep secret)
+4. Go to Settings → Database to get connection string for `DATABASE_URL`
+
+#### ElevenLabs Setup
+1. Sign up at [elevenlabs.io](https://elevenlabs.io)
+2. Go to Profile → API Keys
+3. Generate and copy your API key for `ELEVENLABS_API_KEY`
+
+#### OpenAI Setup
+1. Sign up at [platform.openai.com](https://platform.openai.com)
+2. Go to API Keys section
+3. Create new secret key for `OPENAI_API_KEY`
+
+#### Gmail OAuth Setup
+1. Go to [console.developers.google.com](https://console.developers.google.com)
+2. Create a new project or select existing
+3. Enable Gmail API
+4. Go to Credentials → Create Credentials → OAuth 2.0 Client ID
+5. Configure OAuth consent screen
+6. Set authorized redirect URI: `http://localhost:5000/auth/google/callback`
+7. Copy Client ID and Client Secret
+
+## 🏃‍♂️ Running the Application
+
+### Backend API Server
+
+```bash
+# Activate virtual environment and set required environment variables
+source myenv/bin/activate
+export PATH="$HOME/.cargo/bin:$PATH"
+export PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1
+
+# Run the backend server
+python -m backend.main
+
+# Server will start at http://localhost:5000
+```
+
+### Frontend Mobile App
+
+```bash
+# Install React Native dependencies
+cd frontend
+npm install
+
+# For iOS (requires macOS and Xcode)
+npx react-native run-ios
+
+# For Android (requires Android Studio and SDK)
+npx react-native run-android
+```
+
+## 🧪 Testing
+
+### Run Core Tests
+
+```bash
+# Activate environment with required flags
+source myenv/bin/activate
+export PATH="$HOME/.cargo/bin:$PATH"
+export PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1
+
+# Run the core test suite (40 tests)
+python -m pytest tests/test_minimal_auth.py tests/test_services_unit.py tests/test_schemas.py -v
+
+# Run all tests (requires API keys for integration tests)
+python -m pytest tests/ -v --asyncio-mode=auto
+```
+
+### Code Quality
+
+```bash
+# Format code
+black backend/
+
+# Check linting
+ruff check backend/ --fix
+
+# Type checking (may have external dependency warnings)
+mypy backend/
+```
+
+## 📊 API Endpoints
+
+### Authentication
+- `POST /auth/gmail-oauth` - Start Gmail OAuth flow
+- `GET /auth/google/callback` - OAuth callback
+- `GET /auth/user` - Get current user info
+- `POST /auth/refresh` - Refresh JWT token
+- `POST /auth/logout` - Logout user
+
+### Briefing
+- `POST /start-briefing` - Start new briefing session
+- `GET /sessions/{session_id}/progress` - Get session progress
+- `POST /sessions/{session_id}/control` - Control playback (pause/resume/skip)
+- `WS /voice-stream/{session_id}` - WebSocket for voice interaction
+
+### Health
+- `GET /health` - System health check
+
+## 🎙️ Voice Commands
+
+During a briefing, you can say:
+- **"Skip"** or **"Next"** - Skip to the next story
+- **"Tell me more"** - Get detailed story summary
+- **"What newsletter is this from?"** - Get source information
+- **"Pause"** - Pause the briefing
+- **"Resume"** - Resume playback
+
+## 🏗️ Architecture
+
+### Backend Stack
+- **Framework**: Quart (async Flask-compatible)
+- **Database**: PostgreSQL via Supabase with SQLAlchemy ORM
+- **Authentication**: JWT tokens with OAuth 2.0
+- **Voice Processing**: Vocode with phrase-triggered actions
+- **Text-to-Speech**: ElevenLabs with streaming optimization
+- **Validation**: Pydantic v2 schemas
+
+### Frontend Stack
+- **Framework**: React Native with TypeScript
+- **Navigation**: React Navigation
+- **Audio**: react-native-audio-recorder-player
+- **State Management**: React Context
+- **API Communication**: WebSocket + REST
+
+### External Integrations
+- **Supabase**: Database, file storage, real-time subscriptions
+- **ElevenLabs**: High-quality text-to-speech synthesis
+- **OpenAI GPT**: Newsletter content parsing and summarization
+- **Gmail API**: Newsletter email ingestion
+- **Vocode**: Real-time voice conversation management
+
+## 🔧 Development
+
+### Project Structure
+```
+my-newsletters/
+├── backend/                 # Python backend
+│   ├── models/             # Database models and schemas
+│   ├── services/           # Business logic services
+│   ├── voice/              # Vocode voice actions
+│   ├── routes/             # API route handlers
+│   ├── jobs/               # Background processing
+│   └── main.py             # Application entry point
+├── frontend/               # React Native frontend
+│   ├── components/         # UI components
+│   ├── services/           # API and service clients
+│   └── App.tsx             # Application entry point
+├── tests/                  # Test suites
+└── PRPs/                   # Product Requirements Prompts
+```
+
+### Key Files
+- `backend/main.py` - Main API server with routes and WebSocket
+- `backend/models/database.py` - SQLAlchemy ORM models
+- `backend/voice/conversation_manager.py` - Vocode integration
+- `frontend/App.tsx` - React Native main application
+- `.env.example` - Environment variables template
+- `pyproject.toml` - Python dependencies and configuration
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+#### Rust/Tiktoken Build Errors
+```bash
+# Ensure Rust is installed and in PATH
+rustup default stable
+export PATH="$HOME/.cargo/bin:$PATH"
+export PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1
+```
+
+#### Import Errors
+```bash
+# Ensure all dependencies are installed in the virtual environment
+source myenv/bin/activate
+pip install -e .
+```
+
+#### Database Connection Issues
+- Verify Supabase credentials in `.env`
+- Check database URL format and permissions
+- Ensure Supabase project is active
+
+#### Voice/Audio Issues
+- Verify ElevenLabs API key and quota
+- Check microphone permissions on mobile device
+- Ensure WebSocket connection is established
+
+### Development Tips
+
+1. **Use Environment Variables**: Never commit API keys to version control
+2. **Test Incrementally**: Start with unit tests, then integration tests
+3. **Monitor API Quotas**: ElevenLabs and OpenAI have usage limits
+4. **Debug WebSockets**: Use browser dev tools to monitor WebSocket connections
+5. **Check Logs**: Both backend and frontend log important debugging information
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes with tests
+4. Ensure all tests pass: `python -m pytest tests/ -v`
+5. Submit a pull request
+
+---
+
+**Note**: This application requires several external API keys to function fully. The core architecture and unit tests work without them, but end-to-end functionality requires proper configuration of all external services.

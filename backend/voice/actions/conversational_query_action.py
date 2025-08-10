@@ -136,7 +136,7 @@ class ConversationalQueryAction(BaseBriefingAction):
         Returns:
             AI-generated response
         """
-        system_prompt = """You are an AI assistant helping users understand newsletter stories during an audio briefing. 
+        system_prompt = """You are an AI assistant helping users understand newsletter stories during an audio briefing.
 
 Your role is to:
 - Answer questions about the current story with accuracy and clarity

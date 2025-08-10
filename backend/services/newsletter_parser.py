@@ -284,10 +284,10 @@ class NewsletterParser:
             prompt = f"""
             Analyze this newsletter content and identify individual news stories or articles.
             Split the content into separate stories, maintaining the original text.
-            
+
             Return only the stories as a JSON array of strings, with each story as a complete text block.
             Do not include headers, footers, advertisements, or subscription information.
-            
+
             Newsletter content:
             {text[:4000]}  # Limit input to avoid token limits
             """
@@ -421,9 +421,9 @@ class NewsletterParser:
             1. A clear, engaging headline (max 80 characters)
             2. A one-sentence summary (max 150 characters)
             3. A detailed summary for audio reading (2-3 sentences, conversational tone)
-            
+
             Return as JSON with keys: "headline", "one_sentence_summary", "full_text_summary"
-            
+
             Story text:
             {story_text[:2000]}  # Limit input
             """
@@ -517,9 +517,9 @@ class NewsletterParser:
             prompt = f"""
             Analyze this newsletter content and identify its primary category.
             Choose from: technology, business, politics, health, science, entertainment, sports, general_news
-            
+
             Return only the category name.
-            
+
             Content: {content_sample[:1000]}
             """
 

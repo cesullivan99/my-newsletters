@@ -15,10 +15,10 @@ from googleapiclient.discovery import build
 from quart import g, jsonify, request
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.config import get_settings
+from backend.config import get_config
 from backend.models.database import User, get_async_session
 
-settings = get_settings()
+settings = get_config()
 
 # JWT Configuration
 JWT_SECRET_KEY = settings.jwt_secret_key
@@ -105,9 +105,9 @@ def verify_token(token: str, token_type: str = "access") -> dict[str, Any]:
 
         return payload
     except jwt.ExpiredSignatureError:
-        raise AuthError("Token has expired")
+        raise AuthError("Token has expired") from None
     except jwt.InvalidTokenError:
-        raise AuthError("Invalid token")
+        raise AuthError("Invalid token") from None
 
 
 async def get_user_by_id(user_id: str, db: AsyncSession) -> User | None:

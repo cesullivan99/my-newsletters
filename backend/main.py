@@ -360,7 +360,7 @@ async def voice_stream(session_id: str):
         session_id: UUID of the briefing session
     """
     try:
-        session_uuid = UUID(session_id)
+        UUID(session_id)  # Validate session_id format
         logger.info(f"Voice stream connected for session {session_id}")
 
         # Track connection
@@ -584,8 +584,8 @@ async def get_user_newsletters(user_id: str):
 async def update_user_preferences(user_id: str):
     """Update user preferences."""
     try:
-        data = await request.get_json()
-        user = g.current_user
+        _ = await request.get_json()  # Get request data (not used in stub)
+        _ = g.current_user  # Access current user (not used in stub)
 
         # Update preferences would be handled here
         return jsonify({"status": "updated"})

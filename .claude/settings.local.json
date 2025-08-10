@@ -24,7 +24,9 @@
       "WebFetch(domain:supabase.com)",
       "WebFetch(domain:developers.google.com)",
       "WebFetch(domain:quart.palletsprojects.com)",
-      "WebFetch(domain:elevenlabs.io)"
+      "WebFetch(domain:elevenlabs.io)",
+      "Bash(black:*)",
+      "Bash(mypy:*)"
     ],
     "deny": []
   },
