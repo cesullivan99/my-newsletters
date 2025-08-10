@@ -6,17 +6,16 @@ with proper validation and error handling.
 """
 
 import os
-from typing import Optional
 from contextlib import asynccontextmanager
 
 from dotenv import load_dotenv
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 
 class Config:
     """
     Application configuration loaded from environment variables.
-    
+
     Provides centralized access to all configuration settings with
     validation and default values.
     """
@@ -41,10 +40,20 @@ class Config:
         self.gmail_client_secret = self._get_required("GMAIL_CLIENT_SECRET")
         self.gmail_redirect_uri = self._get_required("GMAIL_REDIRECT_URI")
 
+        # Google OAuth Configuration (alias for auth.py)
+        self.google_client_id = self.gmail_client_id
+        self.google_client_secret = self.gmail_client_secret
+
         # JWT Configuration
         self.jwt_secret = self._get_required("JWT_SECRET")
+        self.jwt_secret_key = self.jwt_secret  # Alias for auth.py
         self.jwt_algorithm = os.getenv("JWT_ALGORITHM", "HS256")
         self.jwt_expiration_hours = int(os.getenv("JWT_EXPIRATION_HOURS", "24"))
+
+        # Backend URL for OAuth redirects
+        self.backend_url = os.getenv(
+            "BACKEND_URL", f"http://{self.app_host}:{self.app_port}"
+        )
 
         # Application Configuration
         self.app_host = os.getenv("APP_HOST", "localhost")
@@ -53,7 +62,9 @@ class Config:
         self.app_env = os.getenv("APP_ENV", "development")
 
         # Audio Processing Configuration
-        self.audio_processing_batch_size = int(os.getenv("AUDIO_PROCESSING_BATCH_SIZE", "10"))
+        self.audio_processing_batch_size = int(
+            os.getenv("AUDIO_PROCESSING_BATCH_SIZE", "10")
+        )
         self.audio_processing_interval_minutes = int(
             os.getenv("AUDIO_PROCESSING_INTERVAL_MINUTES", "15")
         )
@@ -61,20 +72,29 @@ class Config:
         # Voice Configuration
         self.default_voice_id = os.getenv("DEFAULT_VOICE_ID", "JBFqnCBsd6RMkjVDRZzb")
         self.DEFAULT_VOICE_ID = self.default_voice_id  # Alias for convenience
-        self.default_voice_model = os.getenv("DEFAULT_VOICE_MODEL", "eleven_multilingual_v2")
+        self.default_voice_model = os.getenv(
+            "DEFAULT_VOICE_MODEL", "eleven_multilingual_v2"
+        )
         self.audio_streaming_latency = int(os.getenv("AUDIO_STREAMING_LATENCY", "2"))
 
         # Storage Configuration
         self.storage_bucket_name = os.getenv("STORAGE_BUCKET_NAME", "newsletter-audio")
-        self.audio_base_url = os.getenv("AUDIO_BASE_URL", f"{self.supabase_url}/storage/v1/object/public/{self.storage_bucket_name}/")
+        self.audio_base_url = os.getenv(
+            "AUDIO_BASE_URL",
+            f"{self.supabase_url}/storage/v1/object/public/{self.storage_bucket_name}/",
+        )
 
         # Rate Limiting Configuration
         self.gmail_api_rate_limit = int(os.getenv("GMAIL_API_RATE_LIMIT", "100"))
         self.elevenlabs_rate_limit = int(os.getenv("ELEVENLABS_RATE_LIMIT", "20"))
 
         # Frontend Configuration
-        self.frontend_api_base_url = os.getenv("FRONTEND_API_BASE_URL", f"http://{self.app_host}:{self.app_port}")
-        self.websocket_url = os.getenv("WEBSOCKET_URL", f"ws://{self.app_host}:{self.app_port}")
+        self.frontend_api_base_url = os.getenv(
+            "FRONTEND_API_BASE_URL", f"http://{self.app_host}:{self.app_port}"
+        )
+        self.websocket_url = os.getenv(
+            "WEBSOCKET_URL", f"ws://{self.app_host}:{self.app_port}"
+        )
 
         # Logging Configuration
         self.log_level = os.getenv("LOG_LEVEL", "INFO")
@@ -90,7 +110,7 @@ class Config:
             raise ValueError(f"Required environment variable {key} is not set")
         return value
 
-    def _get_optional(self, key: str, default: Optional[str] = None) -> Optional[str]:
+    def _get_optional(self, key: str, default: str | None = None) -> str | None:
         """Get optional environment variable with default."""
         return os.getenv(key, default)
 
@@ -112,7 +132,7 @@ class Config:
     def validate_config(self) -> None:
         """
         Validate configuration settings.
-        
+
         Raises:
             ValueError: If any configuration is invalid.
         """
@@ -142,15 +162,17 @@ class Config:
     def get_database_url(self, async_driver: bool = True) -> str:
         """
         Get database URL with appropriate driver.
-        
+
         Args:
             async_driver: Whether to use async driver (asyncpg vs psycopg2).
-            
+
         Returns:
             Database URL with correct driver.
         """
         if async_driver and self.database_url.startswith("postgresql://"):
-            return self.database_url.replace("postgresql://", "postgresql+asyncpg://", 1)
+            return self.database_url.replace(
+                "postgresql://", "postgresql+asyncpg://", 1
+            )
         return self.database_url
 
     def get_cors_origins(self) -> list[str]:
@@ -179,7 +201,7 @@ class Config:
     def to_dict(self) -> dict:
         """
         Convert configuration to dictionary (excluding secrets).
-        
+
         Returns:
             Dictionary of non-sensitive configuration values.
         """
@@ -230,9 +252,7 @@ def get_session_maker():
     global _session_maker
     if _session_maker is None:
         _session_maker = async_sessionmaker(
-            get_database_engine(),
-            class_=AsyncSession,
-            expire_on_commit=False
+            get_database_engine(), class_=AsyncSession, expire_on_commit=False
         )
     return _session_maker
 
@@ -258,14 +278,16 @@ settings = config
 def validate_environment() -> None:
     """
     Validate environment configuration on startup.
-    
+
     Raises:
         ValueError: If any required configuration is missing or invalid.
     """
     try:
         config.validate_config()
         print(f"✅ Configuration loaded successfully for {config.app_env} environment")
-        print(f"📊 Database: {config.database_url.split('@')[1] if '@' in config.database_url else 'Local'}")
+        print(
+            f"📊 Database: {config.database_url.split('@')[1] if '@' in config.database_url else 'Local'}"
+        )
         print(f"🎵 Audio: ElevenLabs ({config.default_voice_model})")
         print(f"🚀 Server: {config.app_host}:{config.app_port}")
     except ValueError as e:
