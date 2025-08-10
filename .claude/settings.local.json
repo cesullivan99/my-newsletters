@@ -23,7 +23,8 @@
       "WebFetch(domain:flask.palletsprojects.com)",
       "WebFetch(domain:supabase.com)",
       "WebFetch(domain:developers.google.com)",
-      "WebFetch(domain:quart.palletsprojects.com)"
+      "WebFetch(domain:quart.palletsprojects.com)",
+      "WebFetch(domain:elevenlabs.io)"
     ],
     "deny": []
   },

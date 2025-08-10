@@ -1,0 +1,1 @@
+"""Newsletter briefing backend application."""

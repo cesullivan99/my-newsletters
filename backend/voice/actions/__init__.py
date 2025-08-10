@@ -1,0 +1,1 @@
+"""Vocode action implementations for briefing interactions."""
