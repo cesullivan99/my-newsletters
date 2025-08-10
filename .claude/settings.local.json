@@ -17,12 +17,18 @@
       "Bash(python -m pytest:*)",
       "Bash(python3 -m pytest:*)",
       "WebFetch(domain:docs.anthropic.com)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:python.langchain.com)",
+      "WebFetch(domain:docs.vocode.dev)",
+      "WebFetch(domain:flask.palletsprojects.com)",
+      "WebFetch(domain:supabase.com)",
+      "WebFetch(domain:developers.google.com)",
+      "WebFetch(domain:quart.palletsprojects.com)"
     ],
     "deny": []
   },
+  "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "supabase"
-  ],
-  "enableAllProjectMcpServers": true
+  ]
 }
