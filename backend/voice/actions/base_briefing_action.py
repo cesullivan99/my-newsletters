@@ -10,11 +10,18 @@ from uuid import UUID
 
 from pydantic import BaseModel, Field
 from vocode.streaming.action.base_action import BaseAction
+from vocode.streaming.models.actions import ActionConfig, ActionInput, ActionOutput
 
 from backend.config import get_database_session
 from backend.services.session_manager import BriefingSessionManager
 
 logger = logging.getLogger(__name__)
+
+
+class BriefingActionConfig(ActionConfig, type="action_briefing_base"):
+    """Base configuration for briefing actions."""
+    
+    session_id: str = Field(description="ID of the active briefing session")
 
 
 class BriefingActionInput(BaseModel):
@@ -24,7 +31,14 @@ class BriefingActionInput(BaseModel):
     user_query: str | None = Field(default=None, description="Optional user query text")
 
 
-class BaseBriefingAction(BaseAction[BriefingActionInput, str]):
+class BriefingActionResponse(BaseModel):
+    """Base response model for briefing actions."""
+    
+    message: str = Field(description="Response message to be spoken")
+    success: bool = Field(default=True, description="Whether the action succeeded")
+
+
+class BaseBriefingAction(BaseAction[BriefingActionConfig, BriefingActionInput, BriefingActionResponse]):
     """
     Base class for all briefing actions.
 
@@ -32,15 +46,14 @@ class BaseBriefingAction(BaseAction[BriefingActionInput, str]):
     voice actions during newsletter briefings.
     """
 
-    def __init__(self, action_name: str, description: str):
+    def __init__(self, action_config: BriefingActionConfig):
         """
         Initialize base briefing action.
 
         Args:
-            action_name: Name of the action
-            description: Description of what the action does
+            action_config: Configuration for the action
         """
-        super().__init__(action_name=action_name, description=description)
+        super().__init__(action_config=action_config)
         self._session_managers = {}  # Cache session managers by session
 
     async def get_session_manager(self, session_id: str) -> BriefingSessionManager:
@@ -60,7 +73,7 @@ class BaseBriefingAction(BaseAction[BriefingActionInput, str]):
 
         return self._session_managers[session_id]
 
-    async def run(self, action_input: BriefingActionInput, conversation_id: str) -> str:
+    async def run(self, action_input: ActionInput[BriefingActionInput]) -> ActionOutput[BriefingActionResponse]:
         """
         Execute the briefing action.
 
@@ -69,10 +82,9 @@ class BaseBriefingAction(BaseAction[BriefingActionInput, str]):
 
         Args:
             action_input: Input parameters for the action
-            conversation_id: Vocode conversation ID
 
         Returns:
-            Response text to be spoken to the user
+            ActionOutput containing the response
         """
         raise NotImplementedError("Subclasses must implement the run method")
 
@@ -111,7 +123,7 @@ class BaseBriefingAction(BaseAction[BriefingActionInput, str]):
             log_msg += f" - {details}"
         logger.info(log_msg)
 
-    def _handle_action_error(self, error: Exception, session_id: str) -> str:
+    def _handle_action_error(self, error: Exception, session_id: str) -> ActionOutput[BriefingActionResponse]:
         """
         Handle errors that occur during action execution.
 
@@ -120,18 +132,21 @@ class BaseBriefingAction(BaseAction[BriefingActionInput, str]):
             session_id: Session ID where error occurred
 
         Returns:
-            User-friendly error message to be spoken
+            ActionOutput with user-friendly error message to be spoken
         """
         logger.error(f"Action error in session {session_id}: {error}")
 
         # Return user-friendly error messages
         if "session" in str(error).lower():
-            return "I'm having trouble accessing your briefing session. Let me try to restart it."
+            error_msg = "I'm having trouble accessing your briefing session. Let me try to restart it."
         elif "story" in str(error).lower():
-            return "I couldn't find that story. Let me continue with the next one."
+            error_msg = "I couldn't find that story. Let me continue with the next one."
         elif "database" in str(error).lower() or "connection" in str(error).lower():
-            return (
-                "I'm having a temporary connection issue. Please try again in a moment."
-            )
+            error_msg = "I'm having a temporary connection issue. Please try again in a moment."
         else:
-            return "I encountered an issue processing your request. Let me continue with your briefing."
+            error_msg = "I encountered an issue processing your request. Let me continue with your briefing."
+        
+        return ActionOutput(
+            action_type="action_briefing_base",
+            response=BriefingActionResponse(message=error_msg, success=False)
+        )

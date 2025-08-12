@@ -7,13 +7,14 @@ interruptions during newsletter briefings.
 
 import logging
 
-from vocode.streaming.action.phrase_based_action_trigger import (
+from vocode.streaming.models.actions import (
+    ActionConfig,
     PhraseBasedActionTrigger,
     PhraseBasedActionTriggerConfig,
+    PhraseTrigger
 )
-from vocode.streaming.action.phrase_trigger import PhraseTrigger
+from vocode.streaming.models.agent import AgentConfig
 from vocode.streaming.agent.chat_gpt_agent import ChatGPTAgentConfig
-from vocode.streaming.models.actions import ActionConfig
 
 # Import our custom action configs (we'll need to create these)
 

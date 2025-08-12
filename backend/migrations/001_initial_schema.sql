@@ -12,8 +12,7 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     last_login TIMESTAMP WITH TIME ZONE,
-    preferences JSONB DEFAULT '{}',
-    INDEX idx_users_email (email)
+    preferences JSONB DEFAULT '{}'
 );
 
 -- Create newsletters table
@@ -28,10 +27,7 @@ CREATE TABLE IF NOT EXISTS newsletters (
     parsed_content JSONB,
     processing_status VARCHAR(50) DEFAULT 'pending',
     processed_at TIMESTAMP WITH TIME ZONE,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    INDEX idx_newsletters_user_id (user_id),
-    INDEX idx_newsletters_received_date (received_date DESC),
-    INDEX idx_newsletters_processing_status (processing_status)
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Create stories table
@@ -47,10 +43,7 @@ CREATE TABLE IF NOT EXISTS stories (
     audio_status VARCHAR(50) DEFAULT 'pending',
     audio_generated_at TIMESTAMP WITH TIME ZONE,
     metadata JSONB DEFAULT '{}',
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    INDEX idx_stories_newsletter_id (newsletter_id),
-    INDEX idx_stories_position (position),
-    INDEX idx_stories_audio_status (audio_status)
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Create sessions table
@@ -65,10 +58,7 @@ CREATE TABLE IF NOT EXISTS sessions (
     started_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     last_activity TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     ended_at TIMESTAMP WITH TIME ZONE,
-    is_active BOOLEAN DEFAULT true,
-    INDEX idx_sessions_user_id (user_id),
-    INDEX idx_sessions_active (is_active, user_id),
-    INDEX idx_sessions_last_activity (last_activity DESC)
+    is_active BOOLEAN DEFAULT true
 );
 
 -- Create user_preferences table
@@ -85,8 +75,7 @@ CREATE TABLE IF NOT EXISTS user_preferences (
     timezone VARCHAR(50) DEFAULT 'UTC',
     newsletter_sources JSONB DEFAULT '[]',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    INDEX idx_user_preferences_user_id (user_id)
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Create activity_log table for analytics
@@ -96,11 +85,7 @@ CREATE TABLE IF NOT EXISTS activity_log (
     session_id UUID REFERENCES sessions(id) ON DELETE CASCADE,
     action_type VARCHAR(100) NOT NULL,
     action_details JSONB DEFAULT '{}',
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    INDEX idx_activity_log_user_id (user_id),
-    INDEX idx_activity_log_session_id (session_id),
-    INDEX idx_activity_log_action_type (action_type),
-    INDEX idx_activity_log_created_at (created_at DESC)
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Create audio_cache table for managing audio files
@@ -113,9 +98,7 @@ CREATE TABLE IF NOT EXISTS audio_cache (
     checksum VARCHAR(64),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     last_accessed TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    access_count INTEGER DEFAULT 0,
-    INDEX idx_audio_cache_story_id (story_id),
-    INDEX idx_audio_cache_last_accessed (last_accessed DESC)
+    access_count INTEGER DEFAULT 0
 );
 
 -- Create function to update updated_at timestamp
@@ -168,6 +151,25 @@ JOIN users u ON s.user_id = u.id
 LEFT JOIN stories st ON s.current_story_id = st.id
 WHERE s.is_active = true
     AND s.ended_at IS NULL;
+
+-- Create indexes for performance
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+CREATE INDEX IF NOT EXISTS idx_newsletters_user_id ON newsletters(user_id);
+CREATE INDEX IF NOT EXISTS idx_newsletters_received_date ON newsletters(received_date DESC);
+CREATE INDEX IF NOT EXISTS idx_newsletters_processing_status ON newsletters(processing_status);
+CREATE INDEX IF NOT EXISTS idx_stories_newsletter_id ON stories(newsletter_id);
+CREATE INDEX IF NOT EXISTS idx_stories_position ON stories(position);
+CREATE INDEX IF NOT EXISTS idx_stories_audio_status ON stories(audio_status);
+CREATE INDEX IF NOT EXISTS idx_sessions_user_id ON sessions(user_id);
+CREATE INDEX IF NOT EXISTS idx_sessions_active ON sessions(is_active, user_id);
+CREATE INDEX IF NOT EXISTS idx_sessions_last_activity ON sessions(last_activity DESC);
+CREATE INDEX IF NOT EXISTS idx_user_preferences_user_id ON user_preferences(user_id);
+CREATE INDEX IF NOT EXISTS idx_activity_log_user_id ON activity_log(user_id);
+CREATE INDEX IF NOT EXISTS idx_activity_log_session_id ON activity_log(session_id);
+CREATE INDEX IF NOT EXISTS idx_activity_log_action_type ON activity_log(action_type);
+CREATE INDEX IF NOT EXISTS idx_activity_log_created_at ON activity_log(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_audio_cache_story_id ON audio_cache(story_id);
+CREATE INDEX IF NOT EXISTS idx_audio_cache_last_accessed ON audio_cache(last_accessed DESC);
 
 -- Grant permissions (adjust based on your Supabase roles)
 GRANT ALL ON ALL TABLES IN SCHEMA public TO postgres;

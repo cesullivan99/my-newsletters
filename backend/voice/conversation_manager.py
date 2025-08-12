@@ -8,7 +8,7 @@ newsletter briefings, including agent configuration and action coordination.
 import logging
 from typing import Any
 
-from vocode.streaming.action.factory.base import AbstractActionFactory
+from vocode.streaming.action.abstract_factory import AbstractActionFactory
 from vocode.streaming.models.actions import ActionConfig
 from vocode.streaming.models.synthesizer import ElevenLabsSynthesizerConfig
 from vocode.streaming.models.transcriber import DeepgramTranscriberConfig

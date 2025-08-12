@@ -44,6 +44,28 @@ frontend/
 └── services/       # API client, audio handling
 ```
 
+## Testing & Quality Assurance
+
+**📄 See [TESTING.md](./TESTING.md) for comprehensive testing plan and requirements.**
+
+### Testing Overview
+- **132 total test cases** across 8 phases covering all functionality
+- **Automated test suite** with 95%+ coverage requirement
+- **Zero critical bugs policy** before production deployment
+- **Performance benchmarks** for response times and throughput
+- **Security validation** including authentication and data protection
+- **Cross-platform testing** for mobile and web compatibility
+
+### Testing Phases
+1. **Core API Testing** (CRITICAL) - Authentication, newsletters, sessions, audio
+2. **Voice Integration** (HIGH) - Vocode, actions, phrase triggers
+3. **Integration Testing** (HIGH) - End-to-end workflows, external services
+4. **Performance Testing** (MEDIUM) - Load, latency, resource usage
+5. **Security Testing** (HIGH) - Authentication, data protection, vulnerabilities
+6. **Error Handling** (HIGH) - Service failures, network issues, recovery
+7. **User Experience** (MEDIUM) - Voice quality, content accuracy
+8. **Mobile App Testing** (MEDIUM) - React Native frontend validation
+
 ## Key Constraints & Patterns
 
 ### From CLAUDE.md Rules
