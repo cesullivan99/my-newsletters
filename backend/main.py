@@ -46,13 +46,57 @@ app.config.update(
 )
 
 # Enable CORS for frontend integration
-app = cors(app, allow_origin=settings.get_cors_origins())
+app = cors(
+    app,
+    allow_origin=settings.get_cors_origins(),
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type"],
+    expose_headers=["X-Total-Count", "X-Page"],
+    max_age=3600,
+)
 
 # Register blueprints
 app.register_blueprint(auth_bp)
 
+# Import and register other blueprints
+from backend.routes.newsletters import newsletters_bp
+from backend.routes.briefing import briefing_bp
+from backend.routes.audio import audio_bp
+app.register_blueprint(newsletters_bp)
+app.register_blueprint(briefing_bp)
+app.register_blueprint(audio_bp)
+
 # Track active connections
 active_connections: dict[str, Any] = {}
+
+
+@app.before_request
+async def validate_request():
+    """Validate all incoming requests."""
+    # Check content-type for POST/PUT/PATCH (except file uploads)
+    if request.method in ["POST", "PUT", "PATCH"]:
+        # Allow multipart/form-data for file upload endpoints
+        if request.path == "/audio/upload":
+            pass  # Skip content-type validation for file uploads
+        elif not request.is_json:
+            return jsonify({"error": "Content-Type must be application/json"}), 415
+    
+    # Validate pagination parameters
+    if "page" in request.args:
+        try:
+            page = int(request.args.get("page"))
+            if page < 1:
+                return jsonify({"error": "Page must be >= 1"}), 422
+        except ValueError:
+            return jsonify({"error": "Page must be an integer"}), 422
+    
+    if "limit" in request.args:
+        try:
+            limit = int(request.args.get("limit"))
+            if limit < 1 or limit > 100:
+                return jsonify({"error": "Limit must be between 1 and 100"}), 422
+        except ValueError:
+            return jsonify({"error": "Limit must be an integer"}), 422
 
 
 @app.before_serving
@@ -90,6 +134,25 @@ async def handle_validation_error(error):
             ).model_dump()
         ),
         400,
+    )
+
+
+@app.errorhandler(404)
+async def handle_not_found(error):
+    """Handle 404 errors."""
+    return (
+        jsonify({"error": "Endpoint not found", "path": request.path}),
+        404,
+    )
+
+
+@app.errorhandler(500)
+async def handle_internal_error(error):
+    """Handle 500 errors."""
+    logger.error(f"Internal server error: {error}")
+    return (
+        jsonify({"error": "Internal server error"}),
+        500,
     )
 
 

@@ -2,6 +2,7 @@
 Authentication routes for OAuth flow and JWT token management.
 """
 
+import logging
 import uuid
 from datetime import UTC
 
@@ -24,17 +25,18 @@ from backend.utils.auth import (
 )
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
+logger = logging.getLogger(__name__)
 
 
-@auth_bp.route("/gmail-oauth")
+@auth_bp.route("/gmail-oauth", methods=["POST"])
 async def gmail_oauth():
     """
     Start Gmail OAuth 2.0 flow.
 
-    Redirects user to Google OAuth consent screen.
+    Returns JSON with OAuth URL instead of redirecting.
 
     Returns:
-        Redirect to Google OAuth URL
+        JSON with auth_url for frontend to redirect to
     """
     try:
         # Generate state token for CSRF protection
@@ -52,10 +54,10 @@ async def gmail_oauth():
             prompt="consent",  # Force consent screen to get refresh token
         )
 
-        return redirect(authorization_url)
+        return jsonify({"auth_url": authorization_url})
 
     except Exception as e:
-        print(f"Error starting OAuth flow: {e}")
+        logger.error(f"Error starting OAuth flow: {e}")
         return jsonify({"error": "Failed to start authentication"}), 500
 
 
@@ -80,12 +82,12 @@ async def google_callback():
             return redirect(f"myletters://auth?error={error}")
 
         if not code:
-            return redirect("myletters://auth?error=no_code")
+            return jsonify({"error": "Missing authorization code"}), 400
 
         # Verify state token
         stored_state = session.get("oauth_state")
         if not stored_state or state != stored_state:
-            return redirect("myletters://auth?error=invalid_state")
+            return jsonify({"error": "Invalid state token"}), 422
 
         # Exchange code for tokens
         flow = create_oauth_flow()

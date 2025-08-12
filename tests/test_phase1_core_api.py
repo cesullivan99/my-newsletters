@@ -13,10 +13,10 @@ from httpx import AsyncClient
 from quart import Quart
 from backend.main import app
 from backend.config import Config
-from backend.models.database import User, Newsletter, Story, Session
-from backend.api.schemas import (
-    AuthResponse, UserResponse, NewsletterResponse,
-    BriefingSessionResponse, AudioResponse
+from backend.models.database import User, Newsletter, Story, ListeningSession
+from backend.models.schemas import (
+    ErrorResponse, HealthCheckResponse, 
+    BriefingResponse, NewsletterResponse
 )
 
 # Test configuration
@@ -93,7 +93,7 @@ class TestPhase1CoreAPI:
     @pytest.mark.asyncio
     async def test_gmail_oauth_initialize(self, client, mock_settings):
         """Test 1: Gmail OAuth Initialize - POST /auth/gmail-oauth returns valid auth URL"""
-        with patch("backend.api.auth.create_oauth_url") as mock_oauth:
+        with patch("backend.routes.auth.create_oauth_flow") as mock_oauth:
             mock_oauth.return_value = "https://accounts.google.com/oauth/authorize?..."
             
             response = await client.post("/auth/gmail-oauth")

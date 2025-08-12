@@ -183,14 +183,19 @@ def require_auth(f):
         auth_header = request.headers.get("Authorization")
 
         if auth_header:
+            if not auth_header.startswith('Bearer '):
+                return jsonify({"error": "Invalid Authorization format"}), 401
+            
             try:
                 # Extract token from "Bearer <token>"
                 token = auth_header.split(" ")[1]
+                if not token:
+                    return jsonify({"error": "Empty token"}), 401
             except IndexError:
                 return jsonify({"error": "Invalid authorization header format"}), 401
 
         if not token:
-            return jsonify({"error": "Authentication token required"}), 401
+            return jsonify({"error": "Missing Authorization header"}), 401
 
         try:
             # Verify token
@@ -211,7 +216,13 @@ def require_auth(f):
                 g.current_user_id = user_id
 
         except AuthError as e:
-            return jsonify({"error": str(e)}), 401
+            error_message = str(e)
+            if "expired" in error_message.lower():
+                return jsonify({"error": "Token expired"}), 401
+            elif "invalid" in error_message.lower():
+                return jsonify({"error": "Invalid token"}), 401
+            else:
+                return jsonify({"error": str(e)}), 401
         except Exception as e:
             print(f"Auth error: {e}")
             return jsonify({"error": "Authentication failed"}), 401
