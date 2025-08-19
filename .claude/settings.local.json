@@ -29,7 +29,8 @@
       "Bash(mypy:*)",
       "Bash(curl:*)",
       "Bash(pkill:*)",
-      "Bash(kill:*)"
+      "Bash(kill:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"
