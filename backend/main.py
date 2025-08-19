@@ -6,6 +6,7 @@ newsletter briefings with real-time interaction capabilities.
 """
 
 import logging
+import time
 from datetime import datetime
 from typing import Any
 from uuid import UUID
@@ -69,10 +70,33 @@ app.register_blueprint(audio_bp)
 # Track active connections
 active_connections: dict[str, Any] = {}
 
+# Simple rate limiting (in production, use Redis or similar)
+rate_limit_tracker: dict[str, list[float]] = {}
+
 
 @app.before_request
 async def validate_request():
     """Validate all incoming requests."""
+    # Simple rate limiting (100 requests per minute per IP)
+    client_ip = request.remote_addr or "unknown"
+    current_time = time.time()
+    
+    # Clean old entries
+    if client_ip in rate_limit_tracker:
+        rate_limit_tracker[client_ip] = [
+            t for t in rate_limit_tracker[client_ip] 
+            if current_time - t < 60
+        ]
+    else:
+        rate_limit_tracker[client_ip] = []
+    
+    # Check rate limit
+    if len(rate_limit_tracker[client_ip]) >= 100:
+        return jsonify({"error": "Rate limit exceeded. Try again later."}), 429
+    
+    # Track this request
+    rate_limit_tracker[client_ip].append(current_time)
+    
     # Check content-type for POST/PUT/PATCH (except file uploads)
     if request.method in ["POST", "PUT", "PATCH"]:
         # Allow multipart/form-data for file upload endpoints
@@ -97,6 +121,30 @@ async def validate_request():
                 return jsonify({"error": "Limit must be between 1 and 100"}), 422
         except ValueError:
             return jsonify({"error": "Limit must be an integer"}), 422
+
+
+@app.after_request
+async def add_security_headers(response):
+    """Add security headers to all responses."""
+    # Prevent MIME type sniffing
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    
+    # Prevent clickjacking
+    response.headers["X-Frame-Options"] = "DENY"
+    
+    # Enable XSS protection (legacy browsers)
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    
+    # HSTS (only for production with HTTPS)
+    # Uncomment in production: response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+    
+    # Content Security Policy (basic)
+    response.headers["Content-Security-Policy"] = "default-src 'self'"
+    
+    # Referrer Policy
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    
+    return response
 
 
 @app.before_serving
@@ -647,9 +695,21 @@ async def get_user_newsletters(user_id: str):
 async def update_user_preferences(user_id: str):
     """Update user preferences."""
     try:
-        _ = await request.get_json()  # Get request data (not used in stub)
-        _ = g.current_user  # Access current user (not used in stub)
-
+        # Validate user_id
+        try:
+            uid = int(user_id)
+            if uid <= 0:
+                return jsonify({"error": "Invalid user ID"}), 400
+        except ValueError:
+            return jsonify({"error": "User ID must be a number"}), 400
+            
+        # Check if user exists and matches current user
+        current_user = g.current_user
+        if str(current_user.id) != user_id:
+            return jsonify({"error": "Unauthorized"}), 403
+            
+        data = await request.get_json()
+        
         # Update preferences would be handled here
         return jsonify({"status": "updated"})
     except Exception as e:
