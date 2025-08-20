@@ -24,7 +24,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Configuration
-BASE_URL = "http://localhost:5001"
+BASE_URL = "http://localhost:5000"
 
 class ResilienceTestSuite:
     """Error handling and resilience testing framework"""

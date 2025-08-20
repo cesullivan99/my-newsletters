@@ -82,7 +82,7 @@ class TestPhase2VoiceIntegration:
         try:
             # Test WebSocket connection to voice endpoint
             async with websockets.connect(
-                "ws://localhost:5001/voice-stream/test-session-456",
+                "ws://localhost:5000/voice-stream/test-session-456",
                 subprotocols=["voice"]
             ) as websocket:
                 # Send initial connection message
@@ -185,7 +185,7 @@ class TestPhase2VoiceIntegration:
         try:
             # Simulate long-running connection
             async with websockets.connect(
-                "ws://localhost:5001/voice-stream/test-session-456",
+                "ws://localhost:5000/voice-stream/test-session-456",
                 ping_interval=10,
                 ping_timeout=30
             ) as websocket:
@@ -215,7 +215,7 @@ class TestPhase2VoiceIntegration:
             while reconnect_attempts < max_attempts:
                 try:
                     async with websockets.connect(
-                        "ws://localhost:5001/voice-stream/test-session-456"
+                        "ws://localhost:5000/voice-stream/test-session-456"
                     ) as websocket:
                         if reconnect_attempts > 0:
                             # Successfully reconnected

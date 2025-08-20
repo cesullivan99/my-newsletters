@@ -15,7 +15,7 @@ import httpx
 class EndpointTester:
     """Test suite for verifying API endpoint implementation."""
     
-    def __init__(self, base_url: str = "http://localhost:5001"):
+    def __init__(self, base_url: str = "http://localhost:5000"):
         self.base_url = base_url
         self.results: List[Dict] = []
         
@@ -278,7 +278,7 @@ async def main():
     if len(sys.argv) > 1:
         base_url = sys.argv[1]
     else:
-        base_url = "http://localhost:5001"
+        base_url = "http://localhost:5000"
     
     tester = EndpointTester(base_url)
     await tester.run_tests()

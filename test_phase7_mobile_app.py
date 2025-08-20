@@ -18,8 +18,8 @@ import platform
 
 load_dotenv()
 
-BASE_URL = os.getenv("BASE_URL", "http://localhost:5001")
-WS_URL = os.getenv("WS_URL", "ws://localhost:5001")
+BASE_URL = os.getenv("BASE_URL", "http://localhost:5000")
+WS_URL = os.getenv("WS_URL", "ws://localhost:5000")
 FRONTEND_DIR = Path("frontend")  # React Native app directory
 
 class TestResult:
