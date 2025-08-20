@@ -1,6 +1,6 @@
 # Commit Changes
 
-Stage files and commit changes with user approval.
+Stage files, commit changes, and push to remote with user approval.
 
 ## Optional Arguments: $ARGUMENTS
 
@@ -32,17 +32,18 @@ If arguments are provided, they will be used as the commit message. Otherwise, a
        Co-Authored-By: Claude <noreply@anthropic.com>
        ```
 
-4. **User Approval**
+4. **Single User Approval Point**
    - Show the proposed commit message to the user
    - List all files that will be committed
-   - Ask for explicit user approval before proceeding
-   - Wait for confirmation before executing the commit
+   - Ask for explicit user approval before proceeding with commit AND push
+   - Wait for confirmation before executing both commit and push
 
-5. **Execute Commit**
+5. **Execute Commit and Push**
    - Only proceed after user confirms approval
    - Run `git commit` with the approved message
-   - Confirm successful commit with `git status`
-   - Show commit hash and summary
+   - Immediately run `git push` to update remote repository
+   - Confirm successful commit and push with final status
+   - Show commit hash and push summary
 
 ## Safety Measures
 
