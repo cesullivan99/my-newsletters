@@ -65,7 +65,7 @@ You'll need to obtain the following API keys:
    - Click "Create Credentials" → OAuth client ID
    - Application type: Web application
    - Add authorized redirect URIs:
-     - `http://localhost:5000/auth/google/callback` (development)
+     - `http://localhost:5001/auth/google/callback` (development)
      - `https://yourdomain.com/auth/google/callback` (production)
    - Copy Client ID and Client Secret
 
@@ -119,7 +119,7 @@ docker-compose up -d
 docker-compose exec app python backend/migrations/migrate.py migrate
 
 # Verify health
-curl http://localhost:5000/health
+curl http://localhost:5001/health
 ```
 
 #### Option B: Local Setup
@@ -199,8 +199,8 @@ pytest tests/integration -v
 docker-compose up
 
 # In another terminal, test endpoints
-curl http://localhost:5000/health
-curl -X POST http://localhost:5000/auth/gmail-oauth
+curl http://localhost:5001/health
+curl -X POST http://localhost:5001/auth/gmail-oauth
 ```
 
 ## 🚀 Deployment
@@ -299,10 +299,10 @@ git push heroku main
 ### Check Application Health
 ```bash
 # Health endpoint
-curl http://localhost:5000/health
+curl http://localhost:5001/health
 
 # Metrics endpoint
-curl http://localhost:5000/metrics
+curl http://localhost:5001/metrics
 ```
 
 ### View Logs
@@ -335,8 +335,8 @@ SELECT * FROM activity_log ORDER BY created_at DESC LIMIT 10;
 
 #### Port Already in Use
 ```bash
-# Find process using port 5000
-lsof -i :5000
+# Find process using port 5001
+lsof -i :5001
 # Kill the process
 kill -9 <PID>
 ```
@@ -376,7 +376,7 @@ docker-compose up
 
 ## 📚 Additional Resources
 
-- [API Documentation](http://localhost:5000/docs) (when running)
+- [API Documentation](http://localhost:5001/docs) (when running)
 - [Supabase Documentation](https://supabase.com/docs)
 - [ElevenLabs API Reference](https://docs.elevenlabs.io)
 - [React Native Documentation](https://reactnative.dev)

@@ -96,7 +96,7 @@ deploy_application() {
     sleep 10
     
     # Check health
-    if curl -f http://localhost:5000/health > /dev/null 2>&1; then
+    if curl -f http://localhost:5001/health > /dev/null 2>&1; then
         echo -e "${GREEN}Application is healthy${NC}"
     else
         echo -e "${RED}Health check failed${NC}"

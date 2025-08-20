@@ -52,7 +52,7 @@ class Config:
 
         # Application Configuration
         self.app_host = os.getenv("APP_HOST", "localhost")
-        self.app_port = int(os.getenv("APP_PORT", "5000"))
+        self.app_port = int(os.getenv("APP_PORT", "5001"))
 
         # Backend URL for OAuth redirects
         self.backend_url = os.getenv(

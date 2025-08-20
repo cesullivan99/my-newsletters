@@ -135,7 +135,7 @@ class TestConfigValidation:
         
         # Test defaults
         assert config.app_host == "localhost"
-        assert config.app_port == 5000
+        assert config.app_port == 5001
 
 
 if __name__ == "__main__":

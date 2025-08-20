@@ -18,7 +18,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Test configuration
-BASE_URL = "http://localhost:5000"
+BASE_URL = "http://localhost:5001"
 TEST_USER_EMAIL = "test@example.com"
 TEST_SESSION_ID = "test-session-123"
 

@@ -29,7 +29,7 @@ os.environ.update(
         "OPENAI_API_KEY": "test-openai-key",
         "GMAIL_CLIENT_ID": "test-gmail-client-id",
         "GMAIL_CLIENT_SECRET": "test-gmail-client-secret",
-        "GMAIL_REDIRECT_URI": "http://localhost:5000/auth/google/callback",
+        "GMAIL_REDIRECT_URI": "http://localhost:5001/auth/google/callback",
         "JWT_SECRET": "test-jwt-secret-key-for-testing-only-32-chars-long",
         "APP_ENV": "testing",
         "APP_DEBUG": "false",

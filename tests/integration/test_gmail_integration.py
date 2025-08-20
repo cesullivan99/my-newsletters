@@ -42,7 +42,7 @@ class TestGmailIntegration:
     async def test_oauth_flow_initialization(self, gmail_service):
         """Test OAuth flow initialization"""
         auth_url = await gmail_service.get_authorization_url(
-            redirect_uri="http://localhost:5000/auth/google/callback"
+            redirect_uri="http://localhost:5001/auth/google/callback"
         )
         
         assert auth_url is not None

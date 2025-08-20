@@ -1,6 +1,6 @@
 export const API_CONFIG = {
-  BASE_URL: 'http://localhost:5000', // Update for production
-  WEBSOCKET_URL: 'ws://localhost:5000', // Update for production
+  BASE_URL: 'http://localhost:5001', // Update for production
+  WEBSOCKET_URL: 'ws://localhost:5001', // Update for production
   TIMEOUT: 10000, // 10 seconds
 } as const;
 

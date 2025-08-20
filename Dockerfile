@@ -52,17 +52,17 @@ RUN mkdir -p logs && chown -R appuser:appuser logs
 USER appuser
 
 # Expose port
-EXPOSE 5000
+EXPOSE 5001
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:5000/health || exit 1
+    CMD curl -f http://localhost:5001/health || exit 1
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
 ENV APP_ENV=production
 ENV APP_HOST=0.0.0.0
-ENV APP_PORT=5000
+ENV APP_PORT=5001
 
 # Run the application
 CMD ["python", "-m", "backend.main"]

@@ -47,7 +47,7 @@ class TestPhase2VoiceIntegration:
                 
                 # Simulate connection
                 import websockets
-                async with websockets.connect("ws://localhost:5000/voice-stream/test-session") as ws:
+                async with websockets.connect("ws://localhost:5001/voice-stream/test-session") as ws:
                     await ws.send(json.dumps({"type": "start", "session_id": "test-session"}))
                     response = await ws.recv()
                     data = json.loads(response)
@@ -144,7 +144,7 @@ class TestPhase2VoiceIntegration:
                 
                 # Simulate stability check
                 import websockets
-                async with websockets.connect("ws://localhost:5000/voice-stream/test") as ws:
+                async with websockets.connect("ws://localhost:5001/voice-stream/test") as ws:
                     # Simulate ping/pong for 3 iterations (instead of 30 seconds)
                     for _ in range(3):
                         await ws.ping()
@@ -185,13 +185,13 @@ class TestPhase2VoiceIntegration:
                 # Try initial connection (fails)
                 try:
                     import websockets
-                    async with websockets.connect("ws://localhost:5000/voice-stream/test") as ws:
+                    async with websockets.connect("ws://localhost:5001/voice-stream/test") as ws:
                         pass
                 except:
                     pass
                 
                 # Try reconnection (succeeds)
-                async with websockets.connect("ws://localhost:5000/voice-stream/test") as ws:
+                async with websockets.connect("ws://localhost:5001/voice-stream/test") as ws:
                     assert ws.open
                 
                 assert reconnect_count == 2

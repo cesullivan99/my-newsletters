@@ -693,7 +693,7 @@ uv run pytest tests/ -v --asyncio-mode=auto
 uv run python -m backend.main
 
 # Test the complete flow
-curl -X POST http://localhost:5000/start-briefing \
+curl -X POST http://localhost:5001/start-briefing \
   -H "Content-Type: application/json" \
   -d '{"user_id": "test-uuid"}'
 

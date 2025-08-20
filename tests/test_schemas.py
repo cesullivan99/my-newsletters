@@ -52,7 +52,7 @@ class TestBriefingSchemas:
         """Test valid briefing response."""
         session_id = uuid.uuid4()
         story_id = uuid.uuid4()
-        websocket_url = "ws://localhost:5000/voice-stream/session-123"
+        websocket_url = "ws://localhost:5001/voice-stream/session-123"
         
         response = BriefingResponse(
             session_id=session_id,

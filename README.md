@@ -53,7 +53,7 @@ docker-compose up -d
 docker-compose exec app python backend/migrations/migrate.py migrate
 
 # 4. Verify installation
-curl http://localhost:5000/health
+curl http://localhost:5001/health
 ```
 
 ### Local Development Setup
@@ -96,7 +96,7 @@ python -m backend.main
 
 4. **Gmail OAuth** ([console.cloud.google.com](https://console.cloud.google.com))
    - Enable Gmail API → Create OAuth 2.0 credentials
-   - Add redirect URI: `http://localhost:5000/auth/google/callback`
+   - Add redirect URI: `http://localhost:5001/auth/google/callback`
    - Get: `GMAIL_CLIENT_ID`, `GMAIL_CLIENT_SECRET`
 
 5. **JWT Secret**
@@ -112,7 +112,7 @@ See [SETUP.md](./SETUP.md#api-keys-setup) for detailed instructions.
 ### With Docker (Recommended)
 ```bash
 docker-compose up -d
-# Application available at http://localhost:5000
+# Application available at http://localhost:5001
 ```
 
 ### Local Development
@@ -258,7 +258,7 @@ Common issues and solutions are covered in [SETUP.md](./SETUP.md#troubleshooting
 - **[SETUP.md](./SETUP.md)** - Detailed installation, configuration, and deployment guide
 - **[TASK.md](./TASK.md)** - Development progress and task tracking
 - **[PLANNING.md](./PLANNING.md)** - Architecture and design decisions
-- **API Documentation** - Available at `http://localhost:5000/docs` when running
+- **API Documentation** - Available at `http://localhost:5001/docs` when running
 
 ## 🤝 Contributing
 

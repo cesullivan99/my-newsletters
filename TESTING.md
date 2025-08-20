@@ -2,7 +2,7 @@
 
 **Last Updated:** 2025-08-12  
 **Status:** 🚀 **PHASE 1-3 TESTING COMPLETE - 64/132 TESTS PASSING (48%)**  
-**Server:** http://localhost:5000 (All services healthy)  
+**Server:** http://localhost:5001 (All services healthy)  
 **Progress:** ✅ API Endpoints (29/29) | ✅ Voice Integration (15/15) | ✅ Integration Testing (20/20)
 
 ## 📋 **CRITICAL TESTING PHASE - COMPREHENSIVE VALIDATION REQUIRED**
@@ -59,7 +59,7 @@ The application is now **fully operational** locally, but requires extensive tes
 **Completion Date: 2025-08-12**
 
 ### 2.1 Vocode StreamingConversation Testing
-- ✅ **WebSocket Connection**: `ws://localhost:5000/voice-stream/{session_id}` establishes properly
+- ✅ **WebSocket Connection**: `ws://localhost:5001/voice-stream/{session_id}` establishes properly
 - ✅ **STT Integration**: Speech-to-text transcription working accurately
 - ✅ **TTS Integration**: Text-to-speech audio generation and streaming functional
 - ✅ **Conversation Flow**: Agent responds appropriately to user input

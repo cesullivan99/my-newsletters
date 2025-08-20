@@ -23,7 +23,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Configuration
-BASE_URL = "http://localhost:5000"
+BASE_URL = "http://localhost:5001"
 
 class SecurityTestSuite:
     """Security testing framework for the My Newsletters application"""

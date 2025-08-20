@@ -11,7 +11,7 @@ import httpx
 from typing import Dict, Any, Optional
 
 # Configuration
-API_BASE_URL = "http://localhost:5000"
+API_BASE_URL = "http://localhost:5001"
 TEST_RESULTS = []
 
 class Colors:
