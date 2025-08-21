@@ -32,10 +32,19 @@ target 'MyNewslettersApp' do
       # :ccache_enabled => true
     )
     
-    # Fix deployment target warnings
+    # Fix deployment target warnings and C++ compatibility
     installer.pods_project.targets.each do |target|
       target.build_configurations.each do |config|
         config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
+        
+        # Fix C++20 compatibility issues
+        config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++20'
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)']
+        
+        # Add std::identity support
+        if target.name == 'React-utils' || target.name == 'React-Fabric'
+          config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'FOLLY_NO_CONFIG=1'
+        end
       end
     end
   end
