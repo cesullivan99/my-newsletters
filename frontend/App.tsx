@@ -70,23 +70,37 @@ const AppNavigator: React.FC = () => {
 
 const App: React.FC = () => {
   useEffect(() => {
-    const handleDeepLink = (url: string) => {
-      console.log('Deep link received in App:', url);
+    console.log('App: Setting up deep link handlers');
+    
+    const handleDeepLink = (event: {url: string}) => {
+      console.log('App: Deep link event received:', event);
+      console.log('App: Deep link URL:', event.url);
       // The AuthProvider will handle this through its own Linking listener
+      // Log to ensure the event is propagating
     };
 
     // Handle deep link when app is already running
     const linkingListener = Linking.addEventListener('url', handleDeepLink);
+    console.log('App: Linking listener registered');
 
     // Handle deep link when app is launched from deep link
-    Linking.getInitialURL().then((url) => {
-      if (url) {
-        console.log('Initial URL:', url);
-        handleDeepLink(url);
-      }
-    });
+    Linking.getInitialURL()
+      .then((url) => {
+        console.log('App: Initial URL check:', url);
+        if (url) {
+          console.log('App: Processing initial URL:', url);
+          // Simulate the event structure for consistency
+          handleDeepLink({url});
+        } else {
+          console.log('App: No initial URL found');
+        }
+      })
+      .catch((error) => {
+        console.error('App: Error getting initial URL:', error);
+      });
 
     return () => {
+      console.log('App: Removing linking listener');
       linkingListener.remove();
     };
   }, []);

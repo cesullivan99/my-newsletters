@@ -51,6 +51,7 @@ export const VOICE_COMMANDS = {
 
 export const STORAGE_KEYS = {
   AUTH_TOKEN: '@auth_token',
+  REFRESH_TOKEN: '@refresh_token',
   USER_PREFERENCES: '@user_preferences',
   CACHED_BRIEFINGS: '@cached_briefings',
 } as const;

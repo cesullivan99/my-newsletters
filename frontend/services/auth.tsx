@@ -53,15 +53,34 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 
   // Set up deep linking for OAuth callback
   useEffect(() => {
+    console.log('Auth: Setting up OAuth deep link listener');
+    
     const handleDeepLink = (url: string) => {
+      console.log('Auth: Deep link handler called with URL:', url);
       handleOAuthCallback(url);
     };
 
     const linkingListener = Linking.addEventListener('url', (event) => {
+      console.log('Auth: Linking event received:', event);
       handleDeepLink(event.url);
     });
+    
+    console.log('Auth: OAuth listener registered');
+    
+    // Check for initial URL in case app was launched from deep link
+    Linking.getInitialURL()
+      .then((url) => {
+        if (url && url.startsWith('myletters://')) {
+          console.log('Auth: Found initial OAuth URL:', url);
+          handleDeepLink(url);
+        }
+      })
+      .catch((error) => {
+        console.error('Auth: Error checking initial URL:', error);
+      });
 
     return () => {
+      console.log('Auth: Removing OAuth listener');
       linkingListener.remove();
     };
   }, []);
@@ -166,17 +185,33 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
       // Parse the callback URL for auth code/token
       const urlObj = new URL(url);
       const token = urlObj.searchParams.get('token');
+      const refreshToken = urlObj.searchParams.get('refresh_token'); 
       const error = urlObj.searchParams.get('error');
 
-      console.log('Parsed token:', token);
+      console.log('Parsed token:', token ? 'Present' : 'Missing');
+      console.log('Parsed refresh_token:', refreshToken ? 'Present' : 'Missing');
       console.log('Parsed error:', error);
 
       if (error) {
-        throw new Error(`OAuth error: ${error}`);
+        console.error('OAuth error received:', error);
+        Alert.alert(
+          'Authentication Failed',
+          error === 'access_denied' 
+            ? 'You denied access to your Gmail account' 
+            : `Authentication error: ${error}`
+        );
+        setAuthState(prev => ({...prev, isLoading: false}));
+        return;
       }
 
       if (!token) {
         throw new Error('No token received from OAuth callback');
+      }
+
+      // Store refresh token if provided
+      if (refreshToken) {
+        console.log('Storing refresh token');
+        await AsyncStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, refreshToken);
       }
 
       // Fetch user data with the token
@@ -191,7 +226,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
       
       if (!response.ok) {
         const errorText = await response.text();
-        console.log('User fetch error:', errorText);
+        console.error('User fetch error:', errorText);
         throw new Error('Failed to fetch user data');
       }
 
@@ -204,6 +239,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
         [STORAGE_KEYS.USER_PREFERENCES, JSON.stringify(user)],
       ]);
 
+      console.log('Auth data stored successfully');
       console.log('Setting auth state to authenticated');
       setAuthState({
         user,
@@ -211,10 +247,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
         isLoading: false,
         token,
       });
+      console.log('Auth state updated - user should now be logged in');
     } catch (error) {
       console.error('Error handling OAuth callback:', error);
       setAuthState(prev => ({...prev, isLoading: false}));
-      Alert.alert('Authentication Error', 'Failed to complete login');
+      Alert.alert('Authentication Error', 'Failed to complete login. Please try again.');
     }
   };
 
@@ -235,6 +272,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
       // Clear local storage
       await AsyncStorage.multiRemove([
         STORAGE_KEYS.AUTH_TOKEN,
+        STORAGE_KEYS.REFRESH_TOKEN,
         STORAGE_KEYS.USER_PREFERENCES,
         STORAGE_KEYS.CACHED_BRIEFINGS,
       ]);
