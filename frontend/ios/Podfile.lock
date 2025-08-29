@@ -1187,6 +1187,8 @@ PODS:
     - React-logger (= 0.74.7)
     - React-perflogger (= 0.74.7)
     - React-utils (= 0.74.7)
+  - RNAudioRecorderPlayer (3.6.10):
+    - React-Core
   - RNCAsyncStorage (1.24.0):
     - React-Core
   - RNGestureHandler (2.28.0):
@@ -1387,6 +1389,7 @@ DEPENDENCIES:
   - React-runtimescheduler (from `../node_modules/react-native/ReactCommon/react/renderer/runtimescheduler`)
   - React-utils (from `../node_modules/react-native/ReactCommon/react/utils`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - RNAudioRecorderPlayer (from `../node_modules/react-native-audio-recorder-player`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNPermissions (from `../node_modules/react-native-permissions`)
@@ -1511,6 +1514,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/react/utils"
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  RNAudioRecorderPlayer:
+    :path: "../node_modules/react-native-audio-recorder-player"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-async-storage/async-storage"
   RNGestureHandler:
@@ -1582,6 +1587,7 @@ SPEC CHECKSUMS:
   React-runtimescheduler: c5080bd8fd77bd9b98d9a5ec2a4a5cee523e3ec8
   React-utils: 005eaf562b377922d8cf8a5e433046185e479796
   ReactCommon: 788c996e0ae30635a67c2567db2e21f459bcd632
+  RNAudioRecorderPlayer: cf71cb74c6457bb42f564319076f52c9d0fa9b83
   RNCAsyncStorage: b6410dead2732b5c72a7fdb1ecb5651bbcf4674b
   RNGestureHandler: eb1839bf183a333a8cf9bb16d26d41cb17850a4d
   RNPermissions: 4f7b81b0d457c8ec4e892cc36ef2376734a4b22c

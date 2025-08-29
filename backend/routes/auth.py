@@ -4,6 +4,7 @@ Authentication routes for OAuth flow and JWT token management.
 
 import logging
 import uuid
+import time
 from datetime import UTC
 
 from google.oauth2.credentials import Credentials
@@ -27,6 +28,19 @@ from backend.utils.auth import (
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 logger = logging.getLogger(__name__)
 
+# Simple in-memory store for OAuth state tokens (in production, use Redis)
+oauth_state_store = {}
+
+def cleanup_expired_tokens():
+    """Remove expired OAuth state tokens."""
+    current_time = time.time()
+    expired_tokens = [
+        token for token, data in oauth_state_store.items()
+        if current_time > data["expires_at"]
+    ]
+    for token in expired_tokens:
+        del oauth_state_store[token]
+
 
 @auth_bp.route("/gmail-oauth", methods=["POST"])
 async def gmail_oauth():
@@ -41,7 +55,15 @@ async def gmail_oauth():
     try:
         # Generate state token for CSRF protection
         state_token = generate_state_token()
-        session["oauth_state"] = state_token
+        
+        # Store state token with timestamp (expires in 10 minutes)
+        oauth_state_store[state_token] = {
+            "timestamp": time.time(),
+            "expires_at": time.time() + 600  # 10 minutes
+        }
+        
+        # Clean up expired tokens
+        cleanup_expired_tokens()
 
         # Create OAuth flow
         flow = create_oauth_flow()
@@ -85,9 +107,19 @@ async def google_callback():
             return jsonify({"error": "Missing authorization code"}), 400
 
         # Verify state token
-        stored_state = session.get("oauth_state")
-        if not stored_state or state != stored_state:
-            return jsonify({"error": "Invalid state token"}), 422
+        if not state or state not in oauth_state_store:
+            logger.error(f"State token not found: {state}")
+            return redirect("myletters://auth?error=invalid_state")
+            
+        # Check if token is expired
+        token_data = oauth_state_store[state]
+        if time.time() > token_data["expires_at"]:
+            logger.error(f"State token expired: {state}")
+            del oauth_state_store[state]
+            return redirect("myletters://auth?error=expired_state")
+            
+        # Remove used token
+        del oauth_state_store[state]
 
         # Exchange code for tokens
         flow = create_oauth_flow()

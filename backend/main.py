@@ -14,6 +14,7 @@ from uuid import UUID
 from pydantic import ValidationError
 from quart import Quart, g, jsonify, request, websocket
 from quart_cors import cors
+from quart.sessions import SecureCookieSessionInterface
 
 from backend.config import get_database_session, settings, validate_environment
 from backend.models.schemas import (
@@ -43,8 +44,14 @@ app.config.update(
         "SECRET_KEY": settings.jwt_secret,
         "DEBUG": settings.app_debug,
         "TESTING": settings.is_testing,
+        "SESSION_COOKIE_SECURE": False,  # Set to True in production with HTTPS
+        "SESSION_COOKIE_HTTPONLY": True,
+        "SESSION_COOKIE_SAMESITE": "Lax",
     }
 )
+
+# Configure session interface
+app.session_interface = SecureCookieSessionInterface()
 
 # Enable CORS for frontend integration
 app = cors(
@@ -53,6 +60,7 @@ app = cors(
     allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=["Authorization", "Content-Type"],
     expose_headers=["X-Total-Count", "X-Page"],
+    allow_credentials=True,  # Required for session cookies
     max_age=3600,
 )
 

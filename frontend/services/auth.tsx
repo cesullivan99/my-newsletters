@@ -131,8 +131,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
     try {
       setAuthState(prev => ({...prev, isLoading: true}));
 
-      // Generate OAuth URL
-      const authUrl = `${API_CONFIG.BASE_URL}/auth/gmail-oauth`;
+      // Get OAuth URL from backend
+      const response = await fetch(`${API_CONFIG.BASE_URL}/auth/gmail-oauth`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to get OAuth URL');
+      }
+
+      const { auth_url: authUrl } = await response.json();
       
       // Open OAuth flow in system browser
       const supported = await Linking.canOpenURL(authUrl);
@@ -150,10 +161,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 
   const handleOAuthCallback = async (url: string): Promise<void> => {
     try {
+      console.log('OAuth callback received:', url);
+      
       // Parse the callback URL for auth code/token
       const urlObj = new URL(url);
       const token = urlObj.searchParams.get('token');
       const error = urlObj.searchParams.get('error');
+
+      console.log('Parsed token:', token);
+      console.log('Parsed error:', error);
 
       if (error) {
         throw new Error(`OAuth error: ${error}`);
@@ -164,17 +180,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
       }
 
       // Fetch user data with the token
+      console.log('Fetching user data with token...');
       const response = await fetch(`${API_CONFIG.BASE_URL}/auth/user`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
       });
 
+      console.log('User fetch response status:', response.status);
+      
       if (!response.ok) {
+        const errorText = await response.text();
+        console.log('User fetch error:', errorText);
         throw new Error('Failed to fetch user data');
       }
 
       const user: User = await response.json();
+      console.log('User data received:', user);
 
       // Store auth data
       await AsyncStorage.multiSet([
@@ -182,6 +204,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
         [STORAGE_KEYS.USER_PREFERENCES, JSON.stringify(user)],
       ]);
 
+      console.log('Setting auth state to authenticated');
       setAuthState({
         user,
         isAuthenticated: true,
