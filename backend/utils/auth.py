@@ -32,6 +32,7 @@ GOOGLE_CLIENT_SECRET = settings.google_client_secret
 GOOGLE_REDIRECT_URI = f"{settings.backend_url}/auth/google/callback"
 
 SCOPES = [
+    "openid",  # Google automatically adds this, so we include it explicitly
     "https://www.googleapis.com/auth/gmail.readonly",
     "https://www.googleapis.com/auth/userinfo.email",
     "https://www.googleapis.com/auth/userinfo.profile",

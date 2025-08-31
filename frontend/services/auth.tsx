@@ -183,10 +183,29 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
       console.log('OAuth callback received:', url);
       
       // Parse the callback URL for auth code/token
-      const urlObj = new URL(url);
-      const token = urlObj.searchParams.get('token');
-      const refreshToken = urlObj.searchParams.get('refresh_token'); 
-      const error = urlObj.searchParams.get('error');
+      // React Native's Hermes doesn't fully support URLSearchParams, so we parse manually
+      const parseParams = (url: string): Record<string, string> => {
+        const params: Record<string, string> = {};
+        const queryStart = url.indexOf('?');
+        if (queryStart === -1) return params;
+        
+        const queryString = url.substring(queryStart + 1);
+        const pairs = queryString.split('&');
+        
+        pairs.forEach(pair => {
+          const [key, value] = pair.split('=');
+          if (key && value) {
+            params[key] = decodeURIComponent(value);
+          }
+        });
+        
+        return params;
+      };
+      
+      const params = parseParams(url);
+      const token = params.token;
+      const refreshToken = params.refresh_token;
+      const error = params.error;
 
       console.log('Parsed token:', token ? 'Present' : 'Missing');
       console.log('Parsed refresh_token:', refreshToken ? 'Present' : 'Missing');

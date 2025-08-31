@@ -273,7 +273,8 @@ async def init_database(engine) -> None:
 
 
 def get_async_session():
-    """Get async database session factory."""
+    """Get async database session context manager."""
     from backend.config import get_session_maker
-
-    return get_session_maker()
+    
+    session_maker = get_session_maker()
+    return session_maker()
