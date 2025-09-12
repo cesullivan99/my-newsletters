@@ -5,13 +5,15 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {StatusBar, StyleSheet, Linking} from 'react-native';
 
 import AuthScreen from './components/AuthScreen';
+import HomeScreen from './components/HomeScreen';
 import BriefingPlayer from './components/BriefingPlayer';
 import VoiceInterface from './components/VoiceInterface';
 import {AuthProvider, useAuth} from './services/auth';
 
 export type RootStackParamList = {
   Auth: undefined;
-  Briefing: {sessionId: string};
+  Home: undefined;
+  Briefing: undefined;
   Voice: {sessionId: string};
 };
 
@@ -46,11 +48,18 @@ const AppNavigator: React.FC = () => {
         ) : (
           <>
             <Stack.Screen
+              name="Home"
+              component={HomeScreen}
+              options={{
+                title: 'My Newsletters',
+                headerLeft: () => null,
+              }}
+            />
+            <Stack.Screen
               name="Briefing"
               component={BriefingPlayer}
               options={{
                 title: 'Daily Briefing',
-                headerLeft: () => null,
               }}
             />
             <Stack.Screen

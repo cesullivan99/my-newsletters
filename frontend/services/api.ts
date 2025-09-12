@@ -128,6 +128,25 @@ class APIClient {
     await this.client.put(`/users/${userId}/preferences`, preferences);
   }
 
+  async fetchNewsletters(): Promise<{newsletters_fetched: number; status: string}> {
+    const response: AxiosResponse<{newsletters_fetched: number; status: string}> = 
+      await this.client.post('/newsletters/fetch');
+    return response.data;
+  }
+
+  async checkUserStories(userId?: string): Promise<{
+    has_stories: boolean;
+    story_count: number;
+    newsletter_count: number;
+  }> {
+    const response: AxiosResponse<{
+      has_stories: boolean;
+      story_count: number;
+      newsletter_count: number;
+    }> = await this.client.get('/user/stories-status');
+    return response.data;
+  }
+
   // WebSocket connection helper
   createWebSocketConnection(sessionId: string): WebSocket {
     const wsUrl = `${API_CONFIG.WEBSOCKET_URL}/voice-stream/${sessionId}`;

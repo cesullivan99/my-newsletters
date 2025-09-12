@@ -13,7 +13,7 @@ from sqlalchemy import desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.config import get_database_session
-from backend.models.database import Issue, Newsletter, Story, User
+from backend.models.database import Issue, Newsletter, Story, User, UserSubscription
 # Import services with fallback to mock implementations
 try:
     from backend.services.gmail_service import GmailService
@@ -131,10 +131,17 @@ async def fetch_newsletters():
         gmail_service = GmailService()
         
         # Fetch newsletters from Gmail
-        newsletters = await gmail_service.fetch_newsletters(
-            user=current_user,
-            query='label:newsletter OR from:substack OR from:mailchimp',
-            max_results=50
+        # Get the user's access token
+        if not current_user.google_access_token:
+            return jsonify({
+                "error": "no_gmail_auth",
+                "message": "Gmail authentication required"
+            }), 401
+        
+        newsletters = await gmail_service.fetch_newsletter_emails(
+            access_token=current_user.google_access_token,
+            days_back=7,
+            newsletter_keywords=['newsletter', 'substack', 'mailchimp']
         )
         
         if not newsletters:
@@ -146,8 +153,16 @@ async def fetch_newsletters():
         # Process and store newsletters
         processed_count = 0
         async with get_database_session() as db:
-            for newsletter_data in newsletters:
+            for email_data in newsletters:
                 try:
+                    # Map email data to expected format
+                    newsletter_data = {
+                        'html_content': email_data.get('body_html', ''),
+                        'source': email_data.get('sender_name', email_data.get('sender_email', 'Unknown')),
+                        'date': email_data.get('date', datetime.utcnow().isoformat()),
+                        'subject': email_data.get('subject', 'Newsletter')
+                    }
+                    
                     # Parse newsletter content
                     parser = NewsletterParser()
                     parsed = await parser.parse(newsletter_data.get('html_content', ''))
@@ -419,6 +434,23 @@ async def save_newsletter_to_db(
         db.add(newsletter)
         await db.commit()
         await db.refresh(newsletter)
+    
+    # Ensure user is subscribed to this newsletter
+    subscription_result = await db.execute(
+        select(UserSubscription).where(
+            UserSubscription.user_id == user_id,
+            UserSubscription.newsletter_id == newsletter.id
+        )
+    )
+    subscription = subscription_result.scalar_one_or_none()
+    
+    if not subscription:
+        subscription = UserSubscription(
+            user_id=user_id,
+            newsletter_id=newsletter.id
+        )
+        db.add(subscription)
+        await db.commit()
     
     # Create issue
     issue = Issue(

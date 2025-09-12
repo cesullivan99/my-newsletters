@@ -257,6 +257,51 @@ async def health_check():
     return jsonify(response.model_dump())
 
 
+# User stories status endpoint
+@app.route("/user/stories-status", methods=["GET"])
+@require_auth
+async def get_stories_status():
+    """
+    Check if user has stories available for briefing.
+    
+    Returns:
+        JSON with has_stories, story_count, and newsletter_count
+    """
+    try:
+        current_user = g.current_user
+        
+        async with get_database_session() as db:
+            from sqlalchemy import select, func
+            from backend.models.database import Story, Issue, Newsletter, UserSubscription
+            
+            # Count user's newsletters
+            newsletter_count_result = await db.execute(
+                select(func.count(UserSubscription.newsletter_id))
+                .where(UserSubscription.user_id == current_user.id)
+            )
+            newsletter_count = newsletter_count_result.scalar() or 0
+            
+            # Count user's stories
+            story_count_result = await db.execute(
+                select(func.count(Story.id))
+                .join(Issue)
+                .join(Newsletter)
+                .join(UserSubscription)
+                .where(UserSubscription.user_id == current_user.id)
+            )
+            story_count = story_count_result.scalar() or 0
+            
+            return jsonify({
+                "has_stories": story_count > 0,
+                "story_count": story_count,
+                "newsletter_count": newsletter_count
+            })
+            
+    except Exception as e:
+        logger.error(f"Error checking stories status: {e}")
+        return jsonify({"error": "Failed to check stories status"}), 500
+
+
 # Start briefing endpoint
 @app.route("/start-briefing", methods=["POST"])
 @require_auth
